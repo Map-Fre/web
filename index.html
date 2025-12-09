@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapFre Argentina RP</title>
+    
+    <!-- FAVICON: Cambiar "logo.png" por tu archivo de logo -->
+    <link rel="icon" type="image/png" href="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527">
+    
+    <!-- 
+    ============================================
+    INSTRUCCIONES DE CONFIGURACIÓN:
+    ============================================
+    1. LOGO: Reemplazar URL de imagen con tu archivo
+    2. CONTRASEÑAS:
+       - Registro: MapfreEmpresa2025
+       - Edición/Eliminación: EdicionSeg2025
+    3. localStorage usa la clave: mapfre_seguro_db
+    ============================================
+    -->
+    
+    <style>
+        /* ============================================
+           RESET Y CONFIGURACIÓN BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-primary: #e60000;
+            --color-primary-dark: #b30000;
+            --color-secondary: #2c3e50;
+            --color-bg: #f5f5f5;
+            --color-white: #ffffff;
+            --color-text: #333333;
+            --color-text-light: #666666;
+            --color-border: #ddd;
+            --color-success: #27ae60;
+            --color-error: #e74c3c;
+            --color-warning: #f39c12;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           NAVBAR
+           ============================================ */
+        .navbar {
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .navbar-logo img {
+            height: 50px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            color: var(--color-white);
+            border: 2px solid var(--color-white);
+            padding: 0.6rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--color-white);
+            color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           CONTENEDOR PRINCIPAL
+           ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* ============================================
+           SECCIÓN HERO (sin botón de registro)
+           ============================================ */
+        .hero-section {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(230, 0, 0, 0.3);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .hero-logo {
+            width: 150px;
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            opacity: 0.95;
+        }
+
+        /* ============================================
+           DASHBOARD
+           ============================================ */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: var(--color-white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-card-label {
+            color: var(--color-text-light);
+            font-size: 0.95rem;
+        }
+
+        /* ============================================
+           FILTROS
+           ============================================ */
+        .filters-section {
+            background: var(--color-white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--color-text);
+        }
+
+        .filter-input {
+            padding: 0.7rem;
+            border: 2px solid var(--color-border);
+            border-radius: 5px;
+            font-size: 0.95rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* ============================================
+           SECCIÓN DE SEGUROS
+           ============================================ */
+        .seguros-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--color-primary);
+        }
+
+        .seguros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .seguro-card {
+            background: var(--color-white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .seguro-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(230, 0, 0, 0.2);
+            border-color: var(--color-primary);
+        }
+
+        .seguro-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-bg);
+        }
+
+        .seguro-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--color-primary);
+        }
+
+        .seguro-info {
+            flex: 1;
+        }
+
+        .seguro-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-bottom: 0.3rem;
+        }
+
+        .seguro-type {
+            display: inline-block;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .seguro-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .seguro-detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .detail-label {
+            color: var(--color-text-light);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--color-text-light);
+            background: var(--color-white);
+            border-radius: 10px;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            animation: fadeIn 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--color-white);
+            padding: 2.5rem;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+            animation: slideUp 0.4s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-primary);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--color-text-light);
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--color-primary);
+        }
+
+        /* ============================================
+           FORMULARIO
+           ============================================ */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--color-border);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .form-file {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px dashed var(--color-border);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .form-file:hover {
+            border-color: var(--color-primary);
+            background-color: rgba(230, 0, 0, 0.05);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success {
+            background-color: var(--color-success);
+            color: var(--color-white);
+        }
+
+        .btn-success:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background-color: var(--color-text-light);
+            color: var(--color-white);
+        }
+
+        .btn-cancel:hover {
+            background-color: #555;
+        }
+
+        .btn-danger {
+            background-color: var(--color-error);
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-edit {
+            background-color: var(--color-warning);
+            color: var(--color-white);
+        }
+
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+
+        /* ============================================
+           DETALLE DEL SEGURO
+           ============================================ */
+        .detail-photo {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            margin: 1rem auto;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .detail-grid {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            background-color: var(--color-bg);
+            border-radius: 5px;
+        }
+
+        .detail-item-label {
+            font-weight: 700;
+            color: var(--color-secondary);
+        }
+
+        .detail-item-value {
+            color: var(--color-text);
+        }
+
+        /* ============================================
+           TOAST NOTIFICATIONS
+           ============================================ */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 3000;
+            animation: slideInRight 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .toast.success {
+            background-color: var(--color-success);
+            color: var(--color-white);
+        }
+
+        .toast.error {
+            background-color: var(--color-error);
+            color: var(--color-white);
+        }
+
+        .toast.warning {
+            background-color: var(--color-warning);
+            color: var(--color-white);
+        }
+
+        /* ============================================
+           ANIMACIONES
+           ============================================ */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .nav-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .seguros-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         NAVBAR
+         ============================================ -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="MAPFRE Logo" id="logoImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23e60000%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2230%22 font-weight=%22bold%22%3EM%3C/text%3E%3C/svg%3E'">
+            <span class="navbar-brand">MAPFRE</span>
+        </div>
+        <div class="navbar-menu">
+            <button class="nav-btn" id="btnInicio" aria-label="Ir a Inicio">Inicio</button>
+            <button class="nav-btn" id="btnRegistrar" aria-label="Registrar seguros">Registrar seguros</button>
+            <button class="nav-btn" id="btnSeguros" aria-label="Ver seguros publicados">Seguros publicados</button>
+        </div>
+    </nav>
+
+    <!-- ============================================
+         CONTENIDO PRINCIPAL
+         ============================================ -->
+    <div class="container">
+        <!-- Sección Hero (SIN botón de registro) -->
+        <div class="hero-section" id="heroSection">
+            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="Logo MAPFRE" class="hero-logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Ccircle cx=%2275%22 cy=%2275%22 r=%2270%22 fill=%22%23e60000%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2245%22 font-weight=%22bold%22%3EM%3C/text%3E%3C/svg%3E'">
+            <h1 class="hero-title">Bienvenido a MAPFRE</h1>
+            <p class="hero-subtitle">Seguros - Argentina Roleplay</p>
+            <p class="hero-subtitle">Derechos de Programador; @vladimirfernan.</p>
+        </div>
+
+        <!-- Dashboard -->
+        <div class="dashboard" id="dashboard">
+            <div class="dashboard-card">
+                <div class="dashboard-card-icon">📋</div>
+                <div class="dashboard-card-value" id="totalSeguros">0</div>
+                <div class="dashboard-card-label">Total de Seguros</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-icon">🚗</div>
+                <div class="dashboard-card-value" id="totalVehiculos">0</div>
+                <div class="dashboard-card-label">Seguros de Vehículo</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-icon">💼</div>
+                <div class="dashboard-card-value" id="totalEmpresas">0</div>
+                <div class="dashboard-card-label">Seguros de Empresa</div>
+            </div>
+            <div class="dashboard-card">
+                <div class="dashboard-card-icon">⏰</div>
+                <div class="dashboard-card-value" id="totalVencen">0</div>
+                <div class="dashboard-card-label">Vencen en poco tiempo</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Buscar por nombre</label>
+                    <input type="text" class="filter-input" id="filterName" placeholder="Nombre o apellido...">
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">Tipo de seguro</label>
+                    <select class="filter-input" id="filterType">
+                        <option value="">Todos</option>
+                        <option value="Vehículo">Vehículo</option>
+                        <option value="Vida">Vida</option>
+                        <option value="Empresa">Empresa</option>
+                        <option value="Residencia">Residencia</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seguros Publicados -->
+        <div class="seguros-section" id="segurosSection">
+            <h2 class="section-title">Seguros Publicados</h2>
+            <div class="seguros-grid" id="segurosGrid">
+                <!-- Los seguros se cargarán aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE CONTRASEÑA (REGISTRO)
+         ============================================ -->
+    <div id="passwordModal" class="modal" role="dialog" aria-labelledby="passwordModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="passwordModalTitle">Acceso Restringido</h2>
+                <button class="modal-close" id="closePasswordModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="registerPassword">Contraseña de Registro</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="Ingrese la contraseña">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-success" id="validatePasswordBtn">Acceder</button>
+                <button class="btn btn-cancel" id="cancelPasswordBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE FORMULARIO
+         ============================================ -->
+    <div id="formModal" class="modal" role="dialog" aria-labelledby="formModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="formModalTitle">Registrar Seguro</h2>
+                <button class="modal-close" id="closeFormModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="seguroForm">
+                <input type="hidden" id="seguroId">
+                
+                <div class="form-group">
+                    <label class="form-label" for="nombre">Nombre *</label>
+                    <input type="text" class="form-input" id="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="apellido">Apellido *</label>
+                    <input type="text" class="form-input" id="apellido" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="numeroRegistro">Número de Registro * (Formato: 123-456-78)</label>
+                    <input type="text" class="form-input" id="numeroRegistro" pattern="\d{3}-\d{3}-\d{2}" placeholder="123-456-78" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="tipoSeguro">Tipo de Seguro *</label>
+                    <select class="form-select" id="tipoSeguro" required>
+                        <option value="">Seleccione...</option>
+                        <option value="Vehículo">Vehículo</option>
+                        <option value="Vida">Vida</option>
+                        <option value="Empresa">Empresa</option>
+                        <option value="Residencia">Residencia</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="fecha">Fecha *</label>
+                    <input type="date" class="form-input" id="fecha" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="fechaVencimiento">Fecha de Vencimiento *</label>
+                    <input type="date" class="form-input" id="fechaVencimiento" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="foto">Foto del Ciudadano *</label>
+                    <input type="file" class="form-file" id="foto" accept="image/*" required>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-cancel" id="cancelFormBtn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE DETALLE
+         ============================================ -->
+    <div id="detailModal" class="modal" role="dialog" aria-labelledby="detailModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="detailModalTitle">Detalle del Seguro</h2>
+                <button class="modal-close" id="closeDetailModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE CONTRASEÑA (EDICIÓN)
+         ============================================ -->
+    <div id="editPasswordModal" class="modal" role="dialog" aria-labelledby="editPasswordModalTitle" aria-modal="true">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="editPasswordModalTitle">Verificación de Edición</h2>
+                <button class="modal-close" id="closeEditPasswordModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="editPassword">Contraseña de Edición</label>
+                <input type="password" class="form-input" id="editPassword" placeholder="Ingrese la contraseña">
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-success" id="validateEditPasswordBtn">Acceder</button>
+                <button class="btn btn-cancel" id="cancelEditPasswordBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODAL DE CONTRASEÑA (ELIMINACIÓN)
+         ============================================ -->
+    <div id="deletePasswordModal" class="modal" role="dialog" aria-labelledby="deletePasswordModalTitle" aria-modal="true">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="deletePasswordModalTitle">Verificación de Eliminación</h2>
+                <button class="modal-close" id="closeDeletePasswordModal" aria-label="Cerrar">&times;</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="deletePassword">Contraseña de Edición</label>
+                <input type="password" class="form-input" id="deletePassword" placeholder="Ingrese la contraseña">
+                <p style="color: var(--color-error); font-size: 0.9rem; margin-top: 0.5rem;">⚠️ Esta acción no se puede deshacer</p>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-danger" id="validateDeletePasswordBtn">Confirmar Eliminación</button>
+                <button class="btn btn-cancel" id="cancelDeletePasswordBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================
+           CONFIGURACIÓN
+           ============================================ */
+        const STORAGE_KEY = 'mapfre_seguro_db';
+        const REGISTER_PASSWORD = 'MapfreEmpresa2025';
+        const EDIT_PASSWORD = 'EdicionSeg2025';
+
+        let currentEditId = null;
+        let currentDeleteId = null;
+        let seguros = [];
+
+        /* ============================================
+           INICIALIZACIÓN
+           ============================================ */
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSeguros();
+            renderSeguros();
+            updateDashboard();
+            setupEventListeners();
+        });
+
+        /* ============================================
+           EVENT LISTENERS
+           ============================================ */
+        function setupEventListeners() {
+            // Navbar
+            document.getElementById('btnInicio').addEventListener('click', goToHome);
+            document.getElementById('btnRegistrar').addEventListener('click', openPasswordModal);
+            document.getElementById('btnSeguros').addEventListener('click', scrollToSeguros);
+            document.getElementById('logoImg').addEventListener('click', goToHome);
+
+            // Modal de contraseña registro
+            document.getElementById('closePasswordModal').addEventListener('click', closePasswordModal);
+            document.getElementById('validatePasswordBtn').addEventListener('click', validateRegisterPassword);
+            document.getElementById('cancelPasswordBtn').addEventListener('click', closePasswordModal);
+
+            // Modal de formulario
+            document.getElementById('closeFormModal').addEventListener('click', closeFormModal);
+            document.getElementById('cancelFormBtn').addEventListener('click', closeFormModal);
+            document.getElementById('seguroForm').addEventListener('submit', handleFormSubmit);
+
+            // Modal de detalle
+            document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
+
+            // Modal de contraseña edición
+            document.getElementById('closeEditPasswordModal').addEventListener('click', closeEditPasswordModal);
+            document.getElementById('validateEditPasswordBtn').addEventListener('click', validateEditPassword);
+            document.getElementById('cancelEditPasswordBtn').addEventListener('click', closeEditPasswordModal);
+
+            // Modal de contraseña eliminación
+            document.getElementById('closeDeletePasswordModal').addEventListener('click', closeDeletePasswordModal);
+            document.getElementById('validateDeletePasswordBtn').addEventListener('click', validateDeletePassword);
+            document.getElementById('cancelDeletePasswordBtn').addEventListener('click', closeDeletePasswordModal);
+
+            // Filtros en tiempo real
+            document.getElementById('filterName').addEventListener('input', applyFilters);
+            document.getElementById('filterType').addEventListener('change', applyFilters);
+
+            // Enter en password modals
+            document.getElementById('registerPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') validateRegisterPassword();
+            });
+            document.getElementById('editPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') validateEditPassword();
+            });
+            document.getElementById('deletePassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') validateDeletePassword();
+            });
+
+            // ESC para cerrar modales
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePasswordModal();
+                    closeFormModal();
+                    closeDetailModal();
+                    closeEditPasswordModal();
+                    closeDeletePasswordModal();
+                }
+            });
+
+            // Click fuera del modal para cerrar
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    closePasswordModal();
+                    closeFormModal();
+                    closeDetailModal();
+                    closeEditPasswordModal();
+                    closeDeletePasswordModal();
+                }
+            });
+        }
+
+        /* ============================================
+           NAVEGACIÓN
+           ============================================ */
+        function goToHome() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToSeguros() {
+            document.getElementById('segurosSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ============================================
+           GESTIÓN DE MODALES
+           ============================================ */
+        function openPasswordModal() {
+            document.getElementById('passwordModal').classList.add('active');
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerPassword').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.remove('active');
+        }
+
+        function openFormModal(editMode = false, seguroData = null) {
+            const modal = document.getElementById('formModal');
+            const title = document.getElementById('formModalTitle');
+            const form = document.getElementById('seguroForm');
+            
+            if (editMode && seguroData) {
+                title.textContent = 'Editar Seguro';
+                document.getElementById('seguroId').value = seguroData.id;
+                document.getElementById('nombre').value = seguroData.nombre;
+                document.getElementById('apellido').value = seguroData.apellido;
+                document.getElementById('numeroRegistro').value = seguroData.numeroRegistro;
+                document.getElementById('tipoSeguro').value = seguroData.tipoSeguro;
+                document.getElementById('fecha').value = seguroData.fecha;
+                document.getElementById('fechaVencimiento').value = seguroData.fechaVencimiento;
+                // La foto no se precarga, pero no es requerida en edición
+                document.getElementById('foto').required = false;
+            } else {
+                title.textContent = 'Registrar Seguro';
+                form.reset();
+                document.getElementById('seguroId').value = '';
+                document.getElementById('foto').required = true;
+            }
+            
+            modal.classList.add('active');
+            document.getElementById('nombre').focus();
+        }
+
+        function closeFormModal() {
+            document.getElementById('formModal').classList.remove('active');
+            document.getElementById('seguroForm').reset();
+        }
+
+        function openDetailModal(id) {
+            const seguro = seguros.find(s => s.id === id);
+            if (!seguro) return;
+
+            const content = document.getElementById('detailContent');
+            content.innerHTML = `
+                <img src="${seguro.fotoDataUrl}" alt="Foto ${seguro.nombre}" class="detail-photo">
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-item-label">Nombre Completo:</span>
+                        <span class="detail-item-value">${seguro.nombre} ${seguro.apellido}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-item-label">Nº Registro:</span>
+                        <span class="detail-item-value">${seguro.numeroRegistro}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-item-label">Tipo de Seguro:</span>
+                        <span class="detail-item-value">${seguro.tipoSeguro}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-item-label">Fecha Inicio:</span>
+                        <span class="detail-item-value">${formatDate(seguro.fecha)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-item-label">Fecha Vencimiento:</span>
+                        <span class="detail-item-value">${formatDate(seguro.fechaVencimiento)}</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-item-label">Registrado:</span>
+                        <span class="detail-item-value">${formatDate(seguro.createdAt)}</span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-edit" onclick="handleEdit('${seguro.id}')">✏️ Editar</button>
+                    <button class="btn btn-danger" onclick="handleDelete('${seguro.id}')">🗑️ Eliminar</button>
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function openEditPasswordModal() {
+            document.getElementById('editPasswordModal').classList.add('active');
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editPassword').focus();
+        }
+
+        function closeEditPasswordModal() {
+            document.getElementById('editPasswordModal').classList.remove('active');
+            currentEditId = null;
+        }
+
+        function openDeletePasswordModal() {
+            document.getElementById('deletePasswordModal').classList.add('active');
+            document.getElementById('deletePassword').value = '';
+            document.getElementById('deletePassword').focus();
+        }
+
+        function closeDeletePasswordModal() {
+            document.getElementById('deletePasswordModal').classList.remove('active');
+            currentDeleteId = null;
+        }
+
+        /* ============================================
+           VALIDACIÓN DE CONTRASEÑAS
+           ============================================ */
+        function validateRegisterPassword() {
+            const password = document.getElementById('registerPassword').value;
+            
+            if (password === REGISTER_PASSWORD) {
+                closePasswordModal();
+                openFormModal(false);
+            } else {
+                showToast('Contraseña incorrecta', 'error');
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerPassword').focus();
+            }
+        }
+
+        function validateEditPassword() {
+            const password = document.getElementById('editPassword').value;
+            
+            if (password === EDIT_PASSWORD) {
+                closeEditPasswordModal();
+                const seguro = seguros.find(s => s.id === currentEditId);
+                if (seguro) {
+                    closeDetailModal();
+                    openFormModal(true, seguro);
+                }
+            } else {
+                showToast('Contraseña incorrecta', 'error');
+                document.getElementById('editPassword').value = '';
+                document.getElementById('editPassword').focus();
+            }
+        }
+
+        function validateDeletePassword() {
+            const password = document.getElementById('deletePassword').value;
+            
+            if (password === EDIT_PASSWORD) {
+                closeDeletePasswordModal();
+                // Proceder con la eliminación
+                seguros = seguros.filter(s => s.id !== currentDeleteId);
+                saveSeguros();
+                renderSeguros();
+                updateDashboard();
+                closeDetailModal();
+                showToast('Seguro eliminado exitosamente', 'success');
+                currentDeleteId = null;
+            } else {
+                showToast('Contraseña incorrecta', 'error');
+                document.getElementById('deletePassword').value = '';
+                document.getElementById('deletePassword').focus();
+            }
+        }
+
+        /* ============================================
+           GESTIÓN DE DATOS
+           ============================================ */
+        function loadSeguros() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            seguros = data ? JSON.parse(data) : [];
+        }
+
+        function saveSeguros() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(seguros));
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('seguroId').value;
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellido = document.getElementById('apellido').value.trim();
+            const numeroRegistro = document.getElementById('numeroRegistro').value.trim();
+            const tipoSeguro = document.getElementById('tipoSeguro').value;
+            const fecha = document.getElementById('fecha').value;
+            const fechaVencimiento = document.getElementById('fechaVencimiento').value;
+            const fotoInput = document.getElementById('foto');
+
+            // Validar formato de número de registro
+            const regexNumero = /^\d{3}-\d{3}-\d{2}$/;
+            if (!regexNumero.test(numeroRegistro)) {
+                showToast('Formato de número de registro inválido. Use: 123-456-78', 'error');
+                return;
+            }
+
+            // Validar fechas
+            if (new Date(fechaVencimiento) < new Date(fecha)) {
+                showToast('La fecha de vencimiento debe ser posterior a la fecha de inicio', 'error');
+                return;
+            }
+
+            let fotoDataUrl = null;
+
+            // Procesar foto
+            if (fotoInput.files.length > 0) {
+                try {
+                    fotoDataUrl = await fileToBase64(fotoInput.files[0]);
+                } catch (error) {
+                    showToast('Error al procesar la imagen', 'error');
+                    return;
+                }
+            } else if (id) {
+                // Si es edición y no hay nueva foto, mantener la anterior
+                const existingSeguro = seguros.find(s => s.id === id);
+                if (existingSeguro) {
+                    fotoDataUrl = existingSeguro.fotoDataUrl;
+                }
+            } else {
+                showToast('Debe seleccionar una foto', 'error');
+                return;
+            }
+
+            const seguroData = {
+                id: id || Date.now().toString(),
+                nombre,
+                apellido,
+                numeroRegistro,
+                tipoSeguro,
+                fecha,
+                fechaVencimiento,
+                fotoDataUrl,
+                createdAt: id ? seguros.find(s => s.id === id).createdAt : new Date().toISOString()
+            };
+
+            if (id) {
+                // Editar
+                const index = seguros.findIndex(s => s.id === id);
+                if (index !== -1) {
+                    seguros[index] = seguroData;
+                    showToast('Seguro actualizado exitosamente', 'success');
+                }
+            } else {
+                // Crear nuevo
+                seguros.push(seguroData);
+                showToast('Seguro registrado exitosamente', 'success');
+            }
+
+            saveSeguros();
+            renderSeguros();
+            updateDashboard();
+            closeFormModal();
+        }
+
+        function handleEdit(id) {
+            currentEditId = id;
+            openEditPasswordModal();
+        }
+
+        function handleDelete(id) {
+            currentDeleteId = id;
+            openDeletePasswordModal();
+        }
+
+        /* ============================================
+           RENDERIZADO
+           ============================================ */
+        function renderSeguros(filteredSeguros = null) {
+            const grid = document.getElementById('segurosGrid');
+            const segurosToRender = filteredSeguros || seguros;
+
+            if (segurosToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>No hay seguros registrados</h3>
+                        <p>Usa el botón "Registrar seguros" para agregar el primer seguro</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = segurosToRender.map(seguro => `
+                <div class="seguro-card" onclick="openDetailModal('${seguro.id}')">
+                    <div class="seguro-header">
+                        <img src="${seguro.fotoDataUrl}" alt="Foto ${seguro.nombre}" class="seguro-photo">
+                        <div class="seguro-info">
+                            <div class="seguro-name">${seguro.nombre} ${seguro.apellido}</div>
+                            <span class="seguro-type">${seguro.tipoSeguro}</span>
+                        </div>
+                    </div>
+                    <div class="seguro-details">
+                        <div class="seguro-detail-row">
+                            <span class="detail-label">Nº Registro:</span>
+                            <span class="detail-value">${seguro.numeroRegistro}</span>
+                        </div>
+                        <div class="seguro-detail-row">
+                            <span class="detail-label">Vencimiento:</span>
+                            <span class="detail-value">${formatDate(seguro.fechaVencimiento)}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateDashboard() {
+            const total = seguros.length;
+            const vehiculos = seguros.filter(s => s.tipoSeguro === 'Vehículo').length;
+            const empresas = seguros.filter(s => s.tipoSeguro === 'Empresa').length;
+            
+            // Calcular seguros que vencen en 30 días
+            const now = new Date();
+            const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
+            const vencen = seguros.filter(s => {
+                const vencimiento = new Date(s.fechaVencimiento);
+                return vencimiento >= now && vencimiento <= thirtyDaysFromNow;
+            }).length;
+
+            document.getElementById('totalSeguros').textContent = total;
+            document.getElementById('totalVehiculos').textContent = vehiculos;
+            document.getElementById('totalEmpresas').textContent = empresas;
+            document.getElementById('totalVencen').textContent = vencen;
+        }
+
+        function applyFilters() {
+            const nameFilter = document.getElementById('filterName').value.toLowerCase().trim();
+            const typeFilter = document.getElementById('filterType').value;
+
+            let filtered = seguros;
+
+            if (nameFilter) {
+                filtered = filtered.filter(s => 
+                    s.nombre.toLowerCase().includes(nameFilter) || 
+                    s.apellido.toLowerCase().includes(nameFilter)
+                );
+            }
+
+            if (typeFilter) {
+                filtered = filtered.filter(s => s.tipoSeguro === typeFilter);
+            }
+
+            renderSeguros(filtered);
+        }
+
+        /* ============================================
+           UTILIDADES
+           ============================================ */
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) return dateString;
+            return date.toLocaleDateString('es-AR', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit' 
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideInRight 0.4s ease reverse';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 400);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+
