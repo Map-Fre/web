@@ -955,12 +955,21 @@
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button class="btn btn-edit" onclick="handleEdit('${seguro.id}')">✏️ Editar</button>
-                    <button class="btn btn-danger" onclick="handleDelete('${seguro.id}')">🗑️ Eliminar</button>
+                    <button class="btn btn-edit" id="btnEditarSeguro">✏️ Editar</button>
+                    <button class="btn btn-danger" id="btnEliminarSeguro">🗑️ Eliminar</button>
                 </div>
             `;
 
             document.getElementById('detailModal').classList.add('active');
+            
+            // Agregar event listeners después de crear los botones
+            document.getElementById('btnEditarSeguro').addEventListener('click', function() {
+                handleEdit(seguro.id);
+            });
+            
+            document.getElementById('btnEliminarSeguro').addEventListener('click', function() {
+                handleDelete(seguro.id);
+            });
         }
 
         function closeDetailModal() {
