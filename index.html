@@ -5,25 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MapFre Argentina RP</title>
     
-    <!-- FAVICON: Cambiar "logo.png" por tu archivo de logo -->
     <link rel="icon" type="image/png" href="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527">
     
-    <!-- 
-    ============================================
-    INSTRUCCIONES DE CONFIGURACIÓN:
-    ============================================
-    1. LOGO: Reemplazar URL de imagen con tu archivo
-    2. CONTRASEÑAS:
-       - Registro: MapfreEmpresa2025
-       - Edición/Eliminación: EdicionSeg2025
-    3. localStorage usa la clave: mapfre_seguro_db
-    ============================================
-    -->
-    
     <style>
-        /* ============================================
-           RESET Y CONFIGURACIÓN BASE
-           ============================================ */
         * {
             margin: 0;
             padding: 0;
@@ -51,9 +35,6 @@
             line-height: 1.6;
         }
 
-        /* ============================================
-           NAVBAR
-           ============================================ */
         .navbar {
             background-color: var(--color-primary);
             color: var(--color-white);
@@ -109,18 +90,12 @@
             transform: translateY(-2px);
         }
 
-        /* ============================================
-           CONTENEDOR PRINCIPAL
-           ============================================ */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
         }
 
-        /* ============================================
-           SECCIÓN HERO (sin botón de registro)
-           ============================================ */
         .hero-section {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
             color: var(--color-white);
@@ -152,9 +127,6 @@
             opacity: 0.95;
         }
 
-        /* ============================================
-           DASHBOARD
-           ============================================ */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -192,9 +164,6 @@
             font-size: 0.95rem;
         }
 
-        /* ============================================
-           FILTROS
-           ============================================ */
         .filters-section {
             background: var(--color-white);
             padding: 1.5rem;
@@ -235,9 +204,6 @@
             border-color: var(--color-primary);
         }
 
-        /* ============================================
-           SECCIÓN DE SEGUROS
-           ============================================ */
         .seguros-section {
             margin-bottom: 3rem;
         }
@@ -347,9 +313,6 @@
             opacity: 0.3;
         }
 
-        /* ============================================
-           MODAL
-           ============================================ */
         .modal {
             display: none;
             position: fixed;
@@ -411,9 +374,6 @@
             color: var(--color-primary);
         }
 
-        /* ============================================
-           FORMULARIO
-           ============================================ */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -509,9 +469,6 @@
             background-color: #e67e22;
         }
 
-        /* ============================================
-           DETALLE DEL SEGURO
-           ============================================ */
         .detail-photo {
             width: 100%;
             max-width: 300px;
@@ -545,9 +502,6 @@
             color: var(--color-text);
         }
 
-        /* ============================================
-           TOAST NOTIFICATIONS
-           ============================================ */
         .toast {
             position: fixed;
             top: 100px;
@@ -579,9 +533,6 @@
             color: var(--color-white);
         }
 
-        /* ============================================
-           ANIMACIONES
-           ============================================ */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -609,9 +560,6 @@
             }
         }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
         @media (max-width: 768px) {
             .navbar {
                 padding: 0.8rem 1rem;
@@ -662,34 +610,26 @@
     </style>
 </head>
 <body>
-    <!-- ============================================
-         NAVBAR
-         ============================================ -->
     <nav class="navbar">
         <div class="navbar-logo">
-            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="MAPFRE Logo" id="logoImg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Ccircle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23e60000%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2230%22 font-weight=%22bold%22%3EM%3C/text%3E%3C/svg%3E'">
+            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="MAPFRE Logo" id="logoImg">
             <span class="navbar-brand">MAPFRE</span>
         </div>
         <div class="navbar-menu">
-            <button class="nav-btn" id="btnInicio" aria-label="Ir a Inicio">Inicio</button>
-            <button class="nav-btn" id="btnRegistrar" aria-label="Registrar seguros">Registrar seguros</button>
-            <button class="nav-btn" id="btnSeguros" aria-label="Ver seguros publicados">Seguros publicados</button>
+            <button class="nav-btn" id="btnInicio">Inicio</button>
+            <button class="nav-btn" id="btnRegistrar">Registrar seguros</button>
+            <button class="nav-btn" id="btnSeguros">Seguros publicados</button>
         </div>
     </nav>
 
-    <!-- ============================================
-         CONTENIDO PRINCIPAL
-         ============================================ -->
     <div class="container">
-        <!-- Sección Hero (SIN botón de registro) -->
         <div class="hero-section" id="heroSection">
-            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="Logo MAPFRE" class="hero-logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22150%22 height=%22150%22%3E%3Ccircle cx=%2275%22 cy=%2275%22 r=%2270%22 fill=%22%23e60000%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22white%22 font-size=%2245%22 font-weight=%22bold%22%3EM%3C/text%3E%3C/svg%3E'">
+            <img src="https://images-ext-1.discordapp.net/external/KqfyaYjeenvTHeaybPox0LT-APjdtSX-RoFyrrlZsfs/%3Fsize%3D4096/https/cdn.discordapp.com/avatars/1255946816898207834/18a5536133ff77c46881558ccbc4ff0b.png?format=webp&quality=lossless&width=527&height=527" alt="Logo MAPFRE" class="hero-logo">
             <h1 class="hero-title">Bienvenido a MAPFRE</h1>
             <p class="hero-subtitle">Seguros - Argentina Roleplay</p>
             <p class="hero-subtitle">Derechos de Programador; @vladimirfernan.</p>
         </div>
 
-        <!-- Dashboard -->
         <div class="dashboard" id="dashboard">
             <div class="dashboard-card">
                 <div class="dashboard-card-icon">📋</div>
@@ -713,7 +653,6 @@
             </div>
         </div>
 
-        <!-- Filtros -->
         <div class="filters-section">
             <div class="filters-grid">
                 <div class="filter-group">
@@ -733,23 +672,17 @@
             </div>
         </div>
 
-        <!-- Seguros Publicados -->
         <div class="seguros-section" id="segurosSection">
             <h2 class="section-title">Seguros Publicados</h2>
-            <div class="seguros-grid" id="segurosGrid">
-                <!-- Los seguros se cargarán aquí -->
-            </div>
+            <div class="seguros-grid" id="segurosGrid"></div>
         </div>
     </div>
 
-    <!-- ============================================
-         MODAL DE CONTRASEÑA (REGISTRO)
-         ============================================ -->
-    <div id="passwordModal" class="modal" role="dialog" aria-labelledby="passwordModalTitle" aria-modal="true">
+    <div id="passwordModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="passwordModalTitle">Acceso Restringido</h2>
-                <button class="modal-close" id="closePasswordModal" aria-label="Cerrar">&times;</button>
+                <h2 class="modal-title">Acceso Restringido</h2>
+                <button class="modal-close" id="closePasswordModal">&times;</button>
             </div>
             <div class="form-group">
                 <label class="form-label" for="registerPassword">Contraseña de Registro</label>
@@ -762,14 +695,11 @@
         </div>
     </div>
 
-    <!-- ============================================
-         MODAL DE FORMULARIO
-         ============================================ -->
-    <div id="formModal" class="modal" role="dialog" aria-labelledby="formModalTitle" aria-modal="true">
+    <div id="formModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="modal-title" id="formModalTitle">Registrar Seguro</h2>
-                <button class="modal-close" id="closeFormModal" aria-label="Cerrar">&times;</button>
+                <button class="modal-close" id="closeFormModal">&times;</button>
             </div>
             <form id="seguroForm">
                 <input type="hidden" id="seguroId">
@@ -785,8 +715,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="numeroRegistro">Número de Registro * (Formato: 123-456-78)</label>
-                    <input type="text" class="form-input" id="numeroRegistro" pattern="\d{3}-\d{3}-\d{2}" placeholder="123-456-78" required>
+                    <label class="form-label" for="numeroRegistro">Número de Registro * (Formato: 123-2025-XX)</label>
+                    <input type="text" class="form-input" id="numeroRegistro" pattern="123-2025-\d+" placeholder="123-2025-1" required>
                 </div>
 
                 <div class="form-group">
@@ -823,27 +753,21 @@
         </div>
     </div>
 
-    <!-- ============================================
-         MODAL DE DETALLE
-         ============================================ -->
-    <div id="detailModal" class="modal" role="dialog" aria-labelledby="detailModalTitle" aria-modal="true">
+    <div id="detailModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="detailModalTitle">Detalle del Seguro</h2>
-                <button class="modal-close" id="closeDetailModal" aria-label="Cerrar">&times;</button>
+                <h2 class="modal-title">Detalle del Seguro</h2>
+                <button class="modal-close" id="closeDetailModal">&times;</button>
             </div>
             <div id="detailContent"></div>
         </div>
     </div>
 
-    <!-- ============================================
-         MODAL DE CONTRASEÑA (EDICIÓN)
-         ============================================ -->
-    <div id="editPasswordModal" class="modal" role="dialog" aria-labelledby="editPasswordModalTitle" aria-modal="true">
+    <div id="editPasswordModal" class="modal">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
-                <h2 class="modal-title" id="editPasswordModalTitle">Verificación de Edición</h2>
-                <button class="modal-close" id="closeEditPasswordModal" aria-label="Cerrar">&times;</button>
+                <h2 class="modal-title">Verificación de Edición</h2>
+                <button class="modal-close" id="closeEditPasswordModal">&times;</button>
             </div>
             <div class="form-group">
                 <label class="form-label" for="editPassword">Contraseña de Edición</label>
@@ -856,14 +780,11 @@
         </div>
     </div>
 
-    <!-- ============================================
-         MODAL DE CONTRASEÑA (ELIMINACIÓN)
-         ============================================ -->
-    <div id="deletePasswordModal" class="modal" role="dialog" aria-labelledby="deletePasswordModalTitle" aria-modal="true">
+    <div id="deletePasswordModal" class="modal">
         <div class="modal-content" style="max-width: 400px;">
             <div class="modal-header">
-                <h2 class="modal-title" id="deletePasswordModalTitle">Verificación de Eliminación</h2>
-                <button class="modal-close" id="closeDeletePasswordModal" aria-label="Cerrar">&times;</button>
+                <h2 class="modal-title">Verificación de Eliminación</h2>
+                <button class="modal-close" id="closeDeletePasswordModal">&times;</button>
             </div>
             <div class="form-group">
                 <label class="form-label" for="deletePassword">Contraseña de Edición</label>
@@ -878,9 +799,6 @@
     </div>
 
     <script>
-        /* ============================================
-           CONFIGURACIÓN
-           ============================================ */
         const STORAGE_KEY = 'mapfre_seguro_db';
         const REGISTER_PASSWORD = 'MapfreEmpresa2025';
         const EDIT_PASSWORD = 'EdicionSeg2025';
@@ -889,9 +807,6 @@
         let currentDeleteId = null;
         let seguros = [];
 
-        /* ============================================
-           INICIALIZACIÓN
-           ============================================ */
         document.addEventListener('DOMContentLoaded', function() {
             loadSeguros();
             renderSeguros();
@@ -899,44 +814,33 @@
             setupEventListeners();
         });
 
-        /* ============================================
-           EVENT LISTENERS
-           ============================================ */
         function setupEventListeners() {
-            // Navbar
             document.getElementById('btnInicio').addEventListener('click', goToHome);
             document.getElementById('btnRegistrar').addEventListener('click', openPasswordModal);
             document.getElementById('btnSeguros').addEventListener('click', scrollToSeguros);
             document.getElementById('logoImg').addEventListener('click', goToHome);
 
-            // Modal de contraseña registro
             document.getElementById('closePasswordModal').addEventListener('click', closePasswordModal);
             document.getElementById('validatePasswordBtn').addEventListener('click', validateRegisterPassword);
             document.getElementById('cancelPasswordBtn').addEventListener('click', closePasswordModal);
 
-            // Modal de formulario
             document.getElementById('closeFormModal').addEventListener('click', closeFormModal);
             document.getElementById('cancelFormBtn').addEventListener('click', closeFormModal);
             document.getElementById('seguroForm').addEventListener('submit', handleFormSubmit);
 
-            // Modal de detalle
             document.getElementById('closeDetailModal').addEventListener('click', closeDetailModal);
 
-            // Modal de contraseña edición
             document.getElementById('closeEditPasswordModal').addEventListener('click', closeEditPasswordModal);
             document.getElementById('validateEditPasswordBtn').addEventListener('click', validateEditPassword);
             document.getElementById('cancelEditPasswordBtn').addEventListener('click', closeEditPasswordModal);
 
-            // Modal de contraseña eliminación
             document.getElementById('closeDeletePasswordModal').addEventListener('click', closeDeletePasswordModal);
             document.getElementById('validateDeletePasswordBtn').addEventListener('click', validateDeletePassword);
             document.getElementById('cancelDeletePasswordBtn').addEventListener('click', closeDeletePasswordModal);
 
-            // Filtros en tiempo real
             document.getElementById('filterName').addEventListener('input', applyFilters);
             document.getElementById('filterType').addEventListener('change', applyFilters);
 
-            // Enter en password modals
             document.getElementById('registerPassword').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') validateRegisterPassword();
             });
@@ -947,7 +851,6 @@
                 if (e.key === 'Enter') validateDeletePassword();
             });
 
-            // ESC para cerrar modales
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closePasswordModal();
@@ -958,7 +861,6 @@
                 }
             });
 
-            // Click fuera del modal para cerrar
             window.addEventListener('click', function(e) {
                 if (e.target.classList.contains('modal')) {
                     closePasswordModal();
@@ -970,9 +872,6 @@
             });
         }
 
-        /* ============================================
-           NAVEGACIÓN
-           ============================================ */
         function goToHome() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -981,9 +880,6 @@
             document.getElementById('segurosSection').scrollIntoView({ behavior: 'smooth' });
         }
 
-        /* ============================================
-           GESTIÓN DE MODALES
-           ============================================ */
         function openPasswordModal() {
             document.getElementById('passwordModal').classList.add('active');
             document.getElementById('registerPassword').value = '';
@@ -1008,7 +904,6 @@
                 document.getElementById('tipoSeguro').value = seguroData.tipoSeguro;
                 document.getElementById('fecha').value = seguroData.fecha;
                 document.getElementById('fechaVencimiento').value = seguroData.fechaVencimiento;
-                // La foto no se precarga, pero no es requerida en edición
                 document.getElementById('foto').required = false;
             } else {
                 title.textContent = 'Registrar Seguro';
@@ -1094,9 +989,6 @@
             currentDeleteId = null;
         }
 
-        /* ============================================
-           VALIDACIÓN DE CONTRASEÑAS
-           ============================================ */
         function validateRegisterPassword() {
             const password = document.getElementById('registerPassword').value;
             
@@ -1132,7 +1024,6 @@
             
             if (password === EDIT_PASSWORD) {
                 closeDeletePasswordModal();
-                // Proceder con la eliminación
                 seguros = seguros.filter(s => s.id !== currentDeleteId);
                 saveSeguros();
                 renderSeguros();
@@ -1147,9 +1038,6 @@
             }
         }
 
-        /* ============================================
-           GESTIÓN DE DATOS
-           ============================================ */
         function loadSeguros() {
             const data = localStorage.getItem(STORAGE_KEY);
             seguros = data ? JSON.parse(data) : [];
@@ -1171,14 +1059,12 @@
             const fechaVencimiento = document.getElementById('fechaVencimiento').value;
             const fotoInput = document.getElementById('foto');
 
-            // Validar formato de número de registro
-            const regexNumero = /^\d{3}-\d{3}-\d{2}$/;
+            const regexNumero = /^123-2025-\d+$/;
             if (!regexNumero.test(numeroRegistro)) {
-                showToast('Formato de número de registro inválido. Use: 123-456-78', 'error');
+                showToast('Formato de número de registro inválido. Use: 123-2025-XX (donde XX es cualquier número)', 'error');
                 return;
             }
 
-            // Validar fechas
             if (new Date(fechaVencimiento) < new Date(fecha)) {
                 showToast('La fecha de vencimiento debe ser posterior a la fecha de inicio', 'error');
                 return;
@@ -1186,7 +1072,6 @@
 
             let fotoDataUrl = null;
 
-            // Procesar foto
             if (fotoInput.files.length > 0) {
                 try {
                     fotoDataUrl = await fileToBase64(fotoInput.files[0]);
@@ -1195,7 +1080,6 @@
                     return;
                 }
             } else if (id) {
-                // Si es edición y no hay nueva foto, mantener la anterior
                 const existingSeguro = seguros.find(s => s.id === id);
                 if (existingSeguro) {
                     fotoDataUrl = existingSeguro.fotoDataUrl;
@@ -1218,14 +1102,12 @@
             };
 
             if (id) {
-                // Editar
                 const index = seguros.findIndex(s => s.id === id);
                 if (index !== -1) {
                     seguros[index] = seguroData;
                     showToast('Seguro actualizado exitosamente', 'success');
                 }
             } else {
-                // Crear nuevo
                 seguros.push(seguroData);
                 showToast('Seguro registrado exitosamente', 'success');
             }
@@ -1246,9 +1128,6 @@
             openDeletePasswordModal();
         }
 
-        /* ============================================
-           RENDERIZADO
-           ============================================ */
         function renderSeguros(filteredSeguros = null) {
             const grid = document.getElementById('segurosGrid');
             const segurosToRender = filteredSeguros || seguros;
@@ -1292,7 +1171,6 @@
             const vehiculos = seguros.filter(s => s.tipoSeguro === 'Vehículo').length;
             const empresas = seguros.filter(s => s.tipoSeguro === 'Empresa').length;
             
-            // Calcular seguros que vencen en 30 días
             const now = new Date();
             const thirtyDaysFromNow = new Date(now.getTime() + (30 * 24 * 60 * 60 * 1000));
             const vencen = seguros.filter(s => {
@@ -1326,9 +1204,6 @@
             renderSeguros(filtered);
         }
 
-        /* ============================================
-           UTILIDADES
-           ============================================ */
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -1366,4 +1241,3 @@
     </script>
 </body>
 </html>
-
