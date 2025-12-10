@@ -305,6 +305,7 @@
             color: var(--color-text-light);
             background: var(--color-white);
             border-radius: 10px;
+            grid-column: 1 / -1;
         }
 
         .empty-state-icon {
@@ -842,34 +843,45 @@
             document.getElementById('filterType').addEventListener('change', applyFilters);
 
             document.getElementById('registerPassword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') validateRegisterPassword();
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    validateRegisterPassword();
+                }
             });
+            
             document.getElementById('editPassword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') validateEditPassword();
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    validateEditPassword();
+                }
             });
+            
             document.getElementById('deletePassword').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') validateDeletePassword();
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    validateDeletePassword();
+                }
             });
 
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
-                    closePasswordModal();
-                    closeFormModal();
-                    closeDetailModal();
-                    closeEditPasswordModal();
-                    closeDeletePasswordModal();
+                    closeAllModals();
                 }
             });
 
             window.addEventListener('click', function(e) {
                 if (e.target.classList.contains('modal')) {
-                    closePasswordModal();
-                    closeFormModal();
-                    closeDetailModal();
-                    closeEditPasswordModal();
-                    closeDeletePasswordModal();
+                    closeAllModals();
                 }
             });
+        }
+
+        function closeAllModals() {
+            closePasswordModal();
+            closeFormModal();
+            closeDetailModal();
+            closeEditPasswordModal();
+            closeDeletePasswordModal();
         }
 
         function goToHome() {
@@ -883,11 +895,14 @@
         function openPasswordModal() {
             document.getElementById('passwordModal').classList.add('active');
             document.getElementById('registerPassword').value = '';
-            document.getElementById('registerPassword').focus();
+            setTimeout(() => {
+                document.getElementById('registerPassword').focus();
+            }, 100);
         }
 
         function closePasswordModal() {
             document.getElementById('passwordModal').classList.remove('active');
+            document.getElementById('registerPassword').value = '';
         }
 
         function openFormModal(editMode = false, seguroData = null) {
@@ -913,17 +928,23 @@
             }
             
             modal.classList.add('active');
-            document.getElementById('nombre').focus();
+            setTimeout(() => {
+                document.getElementById('nombre').focus();
+            }, 100);
         }
 
         function closeFormModal() {
             document.getElementById('formModal').classList.remove('active');
             document.getElementById('seguroForm').reset();
+            document.getElementById('seguroId').value = '';
         }
 
         function openDetailModal(id) {
             const seguro = seguros.find(s => s.id === id);
-            if (!seguro) return;
+            if (!seguro) {
+                showToast('Seguro no encontrado', 'error');
+                return;
+            }
 
             const content = document.getElementById('detailContent');
             content.innerHTML = `
@@ -955,51 +976,49 @@
                     </div>
                 </div>
                 <div class="form-actions">
-                    <button class="btn btn-edit" id="btnEditarSeguro">✏️ Editar</button>
-                    <button class="btn btn-danger" id="btnEliminarSeguro">🗑️ Eliminar</button>
+                    <button class="btn btn-edit" onclick="handleEdit('${seguro.id}')">✏️ Editar</button>
+                    <button class="btn btn-danger" onclick="handleDelete('${seguro.id}')">🗑️ Eliminar</button>
                 </div>
             `;
 
             document.getElementById('detailModal').classList.add('active');
-            
-            // Agregar event listeners después de crear los botones
-            document.getElementById('btnEditarSeguro').addEventListener('click', function() {
-                handleEdit(seguro.id);
-            });
-            
-            document.getElementById('btnEliminarSeguro').addEventListener('click', function() {
-                handleDelete(seguro.id);
-            });
         }
 
         function closeDetailModal() {
             document.getElementById('detailModal').classList.remove('active');
+            document.getElementById('detailContent').innerHTML = '';
         }
 
         function openEditPasswordModal() {
             document.getElementById('editPasswordModal').classList.add('active');
             document.getElementById('editPassword').value = '';
-            document.getElementById('editPassword').focus();
+            setTimeout(() => {
+                document.getElementById('editPassword').focus();
+            }, 100);
         }
 
         function closeEditPasswordModal() {
             document.getElementById('editPasswordModal').classList.remove('active');
+            document.getElementById('editPassword').value = '';
             currentEditId = null;
         }
 
         function openDeletePasswordModal() {
             document.getElementById('deletePasswordModal').classList.add('active');
             document.getElementById('deletePassword').value = '';
-            document.getElementById('deletePassword').focus();
+            setTimeout(() => {
+                document.getElementById('deletePassword').focus();
+            }, 100);
         }
 
         function closeDeletePasswordModal() {
             document.getElementById('deletePasswordModal').classList.remove('active');
+            document.getElementById('deletePassword').value = '';
             currentDeleteId = null;
         }
 
         function validateRegisterPassword() {
-            const password = document.getElementById('registerPassword').value;
+            const password = document.getElementById('registerPassword').value.trim();
             
             if (password === REGISTER_PASSWORD) {
                 closePasswordModal();
@@ -1012,7 +1031,7 @@
         }
 
         function validateEditPassword() {
-            const password = document.getElementById('editPassword').value;
+            const password = document.getElementById('editPassword').value.trim();
             
             if (password === EDIT_PASSWORD) {
                 closeEditPasswordModal();
@@ -1020,7 +1039,10 @@
                 if (seguro) {
                     closeDetailModal();
                     openFormModal(true, seguro);
+                } else {
+                    showToast('Seguro no encontrado', 'error');
                 }
+                currentEditId = null;
             } else {
                 showToast('Contraseña incorrecta', 'error');
                 document.getElementById('editPassword').value = '';
@@ -1029,14 +1051,22 @@
         }
 
         function validateDeletePassword() {
-            const password = document.getElementById('deletePassword').value;
+            const password = document.getElementById('deletePassword').value.trim();
             
             if (password === EDIT_PASSWORD) {
-                closeDeletePasswordModal();
+                const seguroToDelete = seguros.find(s => s.id === currentDeleteId);
+                
+                if (!seguroToDelete) {
+                    showToast('Seguro no encontrado', 'error');
+                    closeDeletePasswordModal();
+                    return;
+                }
+
                 seguros = seguros.filter(s => s.id !== currentDeleteId);
                 saveSeguros();
                 renderSeguros();
                 updateDashboard();
+                closeDeletePasswordModal();
                 closeDetailModal();
                 showToast('Seguro eliminado exitosamente', 'success');
                 currentDeleteId = null;
@@ -1048,12 +1078,23 @@
         }
 
         function loadSeguros() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            seguros = data ? JSON.parse(data) : [];
+            try {
+                const data = localStorage.getItem(STORAGE_KEY);
+                seguros = data ? JSON.parse(data) : [];
+            } catch (error) {
+                console.error('Error al cargar seguros:', error);
+                seguros = [];
+                showToast('Error al cargar los datos', 'error');
+            }
         }
 
         function saveSeguros() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(seguros));
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(seguros));
+            } catch (error) {
+                console.error('Error al guardar seguros:', error);
+                showToast('Error al guardar los datos', 'error');
+            }
         }
 
         async function handleFormSubmit(e) {
@@ -1068,13 +1109,18 @@
             const fechaVencimiento = document.getElementById('fechaVencimiento').value;
             const fotoInput = document.getElementById('foto');
 
+            if (!nombre || !apellido || !numeroRegistro || !tipoSeguro || !fecha || !fechaVencimiento) {
+                showToast('Por favor complete todos los campos obligatorios', 'error');
+                return;
+            }
+
             const regexNumero = /^123-2025-\d+$/;
             if (!regexNumero.test(numeroRegistro)) {
                 showToast('Formato de número de registro inválido. Use: 123-2025-XX (donde XX es cualquier número)', 'error');
                 return;
             }
 
-            if (new Date(fechaVencimiento) < new Date(fecha)) {
+            if (new Date(fechaVencimiento) <= new Date(fecha)) {
                 showToast('La fecha de vencimiento debe ser posterior a la fecha de inicio', 'error');
                 return;
             }
@@ -1085,6 +1131,7 @@
                 try {
                     fotoDataUrl = await fileToBase64(fotoInput.files[0]);
                 } catch (error) {
+                    console.error('Error al procesar imagen:', error);
                     showToast('Error al procesar la imagen', 'error');
                     return;
                 }
@@ -1092,6 +1139,9 @@
                 const existingSeguro = seguros.find(s => s.id === id);
                 if (existingSeguro) {
                     fotoDataUrl = existingSeguro.fotoDataUrl;
+                } else {
+                    showToast('Seguro no encontrado', 'error');
+                    return;
                 }
             } else {
                 showToast('Debe seleccionar una foto', 'error');
@@ -1107,7 +1157,7 @@
                 fecha,
                 fechaVencimiento,
                 fotoDataUrl,
-                createdAt: id ? seguros.find(s => s.id === id).createdAt : new Date().toISOString()
+                createdAt: id ? seguros.find(s => s.id === id)?.createdAt || new Date().toISOString() : new Date().toISOString()
             };
 
             if (id) {
@@ -1115,6 +1165,9 @@
                 if (index !== -1) {
                     seguros[index] = seguroData;
                     showToast('Seguro actualizado exitosamente', 'success');
+                } else {
+                    showToast('Error: Seguro no encontrado', 'error');
+                    return;
                 }
             } else {
                 seguros.push(seguroData);
@@ -1139,7 +1192,7 @@
 
         function renderSeguros(filteredSeguros = null) {
             const grid = document.getElementById('segurosGrid');
-            const segurosToRender = filteredSeguros || seguros;
+            const segurosToRender = filteredSeguros !== null ? filteredSeguros : seguros;
 
             if (segurosToRender.length === 0) {
                 grid.innerHTML = `
@@ -1197,7 +1250,7 @@
             const nameFilter = document.getElementById('filterName').value.toLowerCase().trim();
             const typeFilter = document.getElementById('filterType').value;
 
-            let filtered = seguros;
+            let filtered = [...seguros];
 
             if (nameFilter) {
                 filtered = filtered.filter(s => 
@@ -1215,6 +1268,16 @@
 
         function fileToBase64(file) {
             return new Promise((resolve, reject) => {
+                if (!file) {
+                    reject(new Error('No se proporcionó archivo'));
+                    return;
+                }
+                
+                if (!file.type.startsWith('image/')) {
+                    reject(new Error('El archivo debe ser una imagen'));
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = () => resolve(reader.result);
                 reader.onerror = error => reject(error);
@@ -1224,16 +1287,27 @@
 
         function formatDate(dateString) {
             if (!dateString) return 'N/A';
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) return dateString;
-            return date.toLocaleDateString('es-AR', { 
-                year: 'numeric', 
-                month: '2-digit', 
-                day: '2-digit' 
-            });
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return dateString;
+                
+                return date.toLocaleDateString('es-AR', { 
+                    year: 'numeric', 
+                    month: '2-digit', 
+                    day: '2-digit' 
+                });
+            } catch (error) {
+                return dateString;
+            }
         }
 
         function showToast(message, type = 'success') {
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.textContent = message;
@@ -1243,7 +1317,9 @@
             setTimeout(() => {
                 toast.style.animation = 'slideInRight 0.4s ease reverse';
                 setTimeout(() => {
-                    document.body.removeChild(toast);
+                    if (toast.parentNode) {
+                        document.body.removeChild(toast);
+                    }
                 }, 400);
             }, 3000);
         }
